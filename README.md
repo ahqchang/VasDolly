@@ -147,3 +147,44 @@ String channel = ChannelReaderUtil.getChannel(getApplicationContext());
 
 # License
 VasDolly is under the BSD license. See the [LICENSE](https://github.com/Tencent/VasDolly/blob/master/LICENSE) file for details.
+
+# Setup linux dev environment
+``` groovy
+# Install git
+sudo yum update
+sudo yum install git
+
+# Clone VasDolly
+cd /data/; git clone https://github.com/ahqchang/VasDolly.git
+cd VasDolly/
+
+# Install java
+sudo yum list java-1.8.0-openjdk.x86_64
+sudo yum install java-1.8.0-openjdk.x86_64
+
+# Install java sdk
+wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u141-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-8u141-linux-x64.rpm
+sudo yum install -y jdk-8u141-linux-x64.rpm
+
+# Install android sdk
+wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+sudo unzip sdk-tools-linux-4333796.zip -d android-sdk
+yes |sudo android-sdk/tools/bin/sdkmanager --licenses
+
+# Setup ENV of android sdk
+echo 'export ANDROID_HOME=/data/android-sdk' >> /.bashrc
+echo 'export PATH=$ANDROID_HOME/platform-tools:$PATH' >> /.bashrc
+echo 'export PATH=$ANDROID_HOME/tools:$PATH' >> /.bashrc
+source ~/.bashrc
+
+# Install android build tools and platforms
+sudo ../android-sdk/tools/bin/sdkmanager --list | grep 'build-tools;28.0.3'
+sudo ../android-sdk/tools/bin/sdkmanager --install "build-tools;28.0.3"
+sudo ../android-sdk/tools/bin/sdkmanager --list | grep "platforms;android-28"
+sudo ../android-sdk/tools/bin/sdkmanager --install "platforms;android-28"
+
+# Test append invitation code into app-debug.apk through rebuilding
+mkdir -p /data/VasDolly/app/baseApk/
+cp ~/web-games-release.apk /data/VasDolly/app/baseApk/app-debug.apk
+./gradlew rebuildChannel
+```
